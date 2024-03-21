@@ -1,0 +1,775 @@
+struct libnative_KType;
+typedef struct libnative_KType libnative_KType;
+
+typedef struct{
+  libnative_KNativePtr pinned;
+}libnative_kref_example_Object;
+
+typedef struct{
+  libnative_KNativePtr pinned;
+}libnative_kref_example_Clazz;
+//
+typedef struct{
+  void (*DisposeStablePointer)(libnative_KNativePtr ptr);
+  void (*DisposeString)(const char* string);
+  libnative_KBoolean (*IsInstance)(libnative_KNativePtr ref, const libnative_KType* type);
+
+  struct{
+    struct{
+      struct{
+        void(*forIntrgers)(libnative_KByte b, libnative_KShort s, libnative_KUInt i, libnative_KLong l);
+        void (*forFloats)(libnative_KFloat f, libnative_KDouble d);
+        const char* (*strings)(const char* str);
+        const char* (*get_globalString)();
+
+        struct{
+          libnative_KType* (*_type)(void);
+          libnative_kref_example_Object(*_instance)();
+          const char* (*get_field)(libnative_kref_example_Object this);
+          
+        }Object;
+        struct{
+          libnative_KType* (*_type)(void);
+          libnative_kref_example_Clazz (*Clazz)();
+          libnative_KULong(*memberFunction)(libnative_kref_example_Clazz this, libnative_KInt p);
+          
+        }Clazz;
+      }example;
+    }root;
+  }kotlin;
+}libnative_ExportedSymbols;
+//
+void (*DisposeStablePointer)(libnative_KNativePtr ptr);
+void (*DisposeString)(const char* string);
+libnative_KBoolean (*IsInstance)(libnative_KNativePtr ref, const libnative_KType* type);
+//
+extern libnative_ExportedSymbols* libnative_symbols(void);
+//
+class Resource
+
+val global = mutableListOf<Resource>()
+
+@OptIn(ExperimentalStdlibApi::class)
+fun getUsage(): Long{
+  GC.collect()
+  return GC.lastGC.lastGCInfo!!.memoryUsageAfter["heap"]!!.totalObjectsSizeBytes
+}
+
+fun run(){
+  global.add(Resource())
+
+  global.clear()
+}
+
+@Test
+fun test(){
+  val before = getUsage()
+
+  run()
+  val after = getUsage()
+  assertEqueals(before, after)
+}
+//
+class KotlinExample{
+  fun action(arg: Any){
+    println(arg)
+  }
+}
+//
+class SwiftExample{
+  init(){
+    print("init on\(Thread.current)")
+  }
+  deinit{
+    print("deinit on \(Thread.current)")
+  }
+}
+func test(){
+  KotlinExample().action(arg: SwiftExample())
+}
+//
+//
+suspend fun asyncFunctionExample() = coroutineScope{
+  launch{
+    delay(1000L)
+    println("World!")
+    
+  }
+  println("HEllo")
+}
+//
+func test(){
+  print("Running test on \(Thread.current)")
+PlatformKt.asyncFunctionExample(completionHandler : {_ in
+print("Running completion handler on \ (Thread.current)"))
+})
+}
+//
+class KotlinExample{
+  fun action(arg: Any){
+    println(arg)
+  }
+}
+//
+fun growingMemoryUsage()}{
+  repeat(Int.MAX_VALUE){
+    NSLog("$it \n")
+  }
+}
+fun steadyMemoryUsage(){
+  repeat(Int.MAX_VALUE){
+    autoreleasepool{
+      NSLog("$it\n")
+    }
+  }
+}
+//
+interface Storage{
+  fun store(arg: Any)
+}
+
+class KotlinStorage(var field: Any? = null): Storage{
+  override fun store(arg: Any){
+    field = arg
+  }
+}
+class KoltinExample{
+  fun action(firstSwiftStorage: Storage, secondSwiftStorage: Storage){
+
+    val firstKotlinStorage = KoltinStorage()
+    firstKotlinStorage.store(firstSwiftStorage)
+    val secondKotlinStorage = kotlinStorage()
+    firstSwiftStorage.store(secondKotlinStorage)
+    secondKotlinStorage.store(secondSwiftStorage)
+    
+  }
+}
+//
+kotlin{
+  targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>{
+    binaries.all{
+      freeCompilerArgs += "-Xadd-light-debug={enable | disable}"
+    }
+  }
+}
+//
+kotlin{
+  targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>{
+    binaries.withType<org.jetbrains.kotlin.gradle.plugin.mpp.Framework>{
+      isStatic = true
+    }   
+  }
+}
+//
+//
+kotlin {
+  iosArm64("mylib"){
+    binaries.sharedLib()
+  }
+}
+//
+kotlin {
+  iosArm64("mylib"){
+    binaries.framework{
+      freeCompilerArgs += listOf("-module-name", "TheName")
+    }
+  }
+}
+//
+kotlin{
+  iosArm64("myapp"){
+    binaries{
+      framework{
+        baseName = "TheName"
+      }
+    }
+  }
+}
+//
+kotlin{
+  iosArm64("myapp"){
+    binaries{
+      framework{
+    embedBitcode("bitcode")
+      }
+    }
+  }
+}
+//
+fun main(){
+  document.body?.appendText("Hello, ${greet()}!")
+
+  document.body?.appendElement("button"){
+    this.textContent = "Click me, I'm a button!"
+    addEventListener("click"){
+      window.setTimeout({
+        window.alert("--")
+      null
+      }, 1000)
+    }
+  }
+}
+fun greet() = "world"
+//
+repositories{
+  mavenCentral()
+}
+//
+repositories {
+maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
+}
+
+kotlin{
+  sourceSets{
+    val wasmMain by getting{
+      dependencies{
+        implementation("org.jetbrains.kotlinx:kotlinx-serialization-core-wasm:1.5.1-wasm0")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-wasm:1.6.4-wasm0")
+        implementation("io.ktor:ktor-client-core-wasm:2.3.1-wasm0")
+        }
+    }  
+  
+  }
+}
+//
+external val maxUsers: Int
+external fun getActiveUsers(): Int
+external class User{
+  constructor(username: String)
+  val username: String
+}
+//
+external fun convertIntAndString(num: Int, text: String)
+external fun convertIntAndChar(num: Any, text:CharSequence)
+
+convertIntAndString(10, "Hello")
+convertAnyChars(10, "Hello")
+//
+val user: dynamic
+val age: Int = 0
+user.profile.updateAge(age);
+
+external interface User
+
+@JsFun("(user, age) => user.profile.updateAge(age)")
+external fun updateUserAge(user: User, age: Int)
+
+val user: User
+val age: Int = 0
+updateUserAge(user, age);
+//
+
+fun jsTypeOf(obj:Any):String{
+  return js("typeof obj")
+}
+
+@JsFun("(obj) => typeof obj")
+external fun jsTypeOf(obj : SomeExternalInterfaceType): String
+//
+external interface DataProcessor{
+  fun processData(input: String): String
+  fun processResult(input: String): String
+}
+
+class DataHandler(val handlerData: String){
+  fun processData(input: String): String = input + handlerData
+  fun processResult(input: String): String = handlerData + input
+}
+
+@JsFun("(processData, processResult) => ({processData, processResult })")
+external fun creatDataProcessor(
+  processData: (String) -> String,
+  processResult: (String) -> String
+): DataProcessor
+
+fun convertHandlerToProcessor(handler: DataHandler): DataProcessor = 
+  createDataProcessor(
+    processData = {input -> handler.processData(input)},
+    processResult = {input -> handler.processResult(input)}
+  )
+  //
+  plugins{
+    kotlin("multiplatform")version "1.9.20"
+  }
+  //
+  kotlin{
+    js{
+      brower{
+        
+      }
+      binaries.executable()
+    }
+  }
+  //
+  dependencies{
+    implementation("org.example.myproject", "1.1.0")
+  }
+  //
+  kotlin{
+    sourceSets{
+      val jsMain by getting{
+        dependencies{
+          implementation("org.example.myproject:1.1.0")
+        }
+      }
+    }
+  }
+  //
+  kotlin{
+    sourceSets{
+      val commonTest by getting{
+        dependencies{
+          implementation(kotlin("text"))
+        }
+      }
+    }
+  }
+  //
+  dependencies{
+    implementation(npm("react", > 14.0.0 <= 16.9.0))
+  }
+  //
+
+  kotlin{
+    js{
+      brower{
+        testTask{
+          useKarma{
+            useIe()
+            useSafari()
+            useFirefox()
+            useChrome()
+            useChromeCanary()
+            useChromeHeadless()
+            usePhantomJS()
+            useOpera()
+          }
+        }
+      }
+      binaries.executable()
+    }
+  }
+  //
+  kotlin{
+    js{
+      brower{
+      testTask{
+        enabled = false
+      }  
+      }
+      binaries.executable()
+    }
+  }
+  //
+  kotlin{
+    js{
+      nodejs{
+        testTask{
+          environment("key", "value")
+        }
+      }
+    }
+  }
+  //
+  webpackTask{
+    outputFileName = " mycustomfilename.js"
+    output.libraryTarget = " commonjs2"
+  }
+  //
+  config.module.rules.push({
+    test: /\.extension$/,
+    loader:'loader-name'
+  });
+//
+browser{
+  commonWebpackConfig{
+    cssSupport{
+      enabled.set(true)
+    }
+  }
+}
+//
+brower{
+  webpackTask{
+    cssSupport{
+      enabled.set(true)
+    }
+  }
+  runTask{
+    cssSupport{
+      enabled.set(true)
+    }
+  }
+  testTask{
+    useKarma{
+
+      webpackConfig.cssSupport{
+        enabled.set(true)
+      }
+    }
+  }
+}
+//
+rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin>{ 
+rootProject.the<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension>().download = false}
+//
+rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarntPlugin>{ 
+rootProject.the<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootRootExtension>().download = false
+}
+//
+rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarntPlugin>{ 
+    rootProject.the<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootRootExtension>().lockFileDirectory = 
+  project.rootDir.resolve("my-kotlin-js-store")
+  rootProject.the<org.jetbrains.kotlingradle.targets.js.yarn.YarnRootExtension>().lockFileName = "my-yarn.lock"
+}
+//
+rootProject.plugins.withType(org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin::class.java){
+  rootProject.the<YarnRootExtension>().yarnLockMismatchReport = 
+  YarnLockMismatchReport.WARNING
+
+  rootProject.the<YarnRootExtension>().reportNewLock = false
+  rootProject.the<YarnRootExtension>().yarnLockReplace = false
+  
+
+}
+//
+rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin>{
+  rootProject.the<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension>().igoreScripts = false
+}
+//
+kotlin{
+  js{
+    brower{
+      distribution{
+        directory = File("$projectDir/out.put/")
+      }
+    }
+    binaries.executable()
+  }
+}
+//
+kotlin{
+  js{
+    compilations["main"].packageJson{
+      customField("hello", mapOf("one" to 1, " two" to 2))
+    }
+  }
+}
+//
+fun main(){
+  console.log("Hello, kotlin/JS!")
+}
+//
+fun main(){
+  val greeting = "hello"
+  console.log("$greeting, ${world()}")
+  for(i in 1..getRandomCount()) console.log
+}
+
+fun world() = " world"
+fun getRandomCount() = Random.nextInt(10)
+//
+kotlin{
+  sourceSets{
+    val commonTest by getting{
+      dependencies{
+        implementation(kotlin("test"))
+      }
+    }
+    }
+}
+//
+class AppTest{
+  @Test
+  fun thingsShouldWork(){
+    assertEquals(listOf(1,2,3).reversed(), listOf(3,2,1))
+  }
+
+  @Test
+  fun thinfsShouldBreak(){
+    assertEquals(listOf(1,2,3).reversed(), listOf(1,2,3))
+  }
+}
+//
+kotlin{
+  js{
+    browser{
+      dceTask{
+        keep("myKotlinJSModule.org.example.getName", "myKotlinJSModule.org.example.User")
+      }
+      binaries.executable()
+    }
+  }
+}
+//
+kotlin{
+  js{
+    browser{
+      dceTask{
+        dceOptions.devMode = true
+      }
+    }
+    binaries.execitable()
+  }
+}
+//
+kotlin{
+  js(IR){
+    binaries.executable()
+  }
+}
+//
+val a = run{
+  val result = 
+  println(result)
+  result
+}
+//
+kotlin{
+  js(IR){
+    compilations.all{
+      compileTaskProvider.configure{
+        compilerOptions.freeCompilerArgs.add("-Xerror-tolerance-policy=SYNTAX")
+      }
+    }
+  }
+}
+//
+kotlin
+{
+  js{
+    binaries.executable()
+    brower{
+      
+    }generateTypeScriptDefinitions()
+  }
+}
+//
+interface AppState : State{}
+interface AppProps : Props{}
+data class CustomComponentState(var name: String): State
+
+//
+external interface AppState : State{}
+external interface AppProps : Props{}
+external interface CustomComponentState: State{
+  var name : String
+}
+//
+
+val myState = jso<CustomComponentState>()
+myState.name = "name"
+//
+external interface CustomComponentState: State{
+  val name : String
+}
+
+//
+external interface ButtonProps: Props{
+  val inside: StyledDOMBuilder<BUTTON>.() -> Unit
+  
+}
+//
+external interface AppProps {var name: String}
+data class AppPropsImpl(override var name: String): AppProps
+fun main(){
+  val jsApp = js("{name: 'App1'}") as AppProps
+  println("Kotlin sees: ${jsApp.name}")
+  println("JSON.stringify sees: " + JSON.stringify(jsApp))
+
+  val ktApp = AppPropsImpl("App2")
+  println("Kotlin sees: ${ktApp.name}")
+
+  println("JSON.stringify sees: " + JSON.stringify(ktApp))
+}
+//
+external interface AppProps{var name: String}
+data class AppPropsImpl(override var name: String): AppProps
+
+val ktApp = AppPropsImpl("App1")
+val js App = js ("{name: 'App1'}")as AppProps
+val jsonApp = kotlin.js.json(Pair("name", "App1"))as AppProps
+//
+kotlin{
+  js(IR){
+    brower{
+      
+    }
+    binaries.executable()
+  }
+}
+//
+external interface SomeExternal{
+  var visible: Boolean
+  
+}
+
+fun main(){
+  val empty: SomeExternal = js("{}")
+  println(empty.visible.toString())
+}
+//
+external interface SomeExternal{
+  var visible: Boolean
+}
+
+//
+val email = document.getElementById("email") as HTMLInputElemnt
+email.value = "hadi@jetbrains.companion"
+//
+fun jsTypeOf(o: Any): String{
+  return js("typeof o")
+}
+//
+fun jsTypeOf(o: Any): String{
+  return js(getTypeof() + " o")
+}
+fun getTypeof() = "typeof"
+//
+external fun alert (message: Any?): Unit
+
+external class Node{
+  val firstChild: Node
+
+  fun append(child:Node): Node
+  fun removeChild(child:Node):Node
+}
+external val window: Window
+//
+function MyClass(){...}
+MyClass.sharedMember - function(){}
+MyClass.prototype.ownMember = function()
+//
+external class MyClass{
+  companion object{
+    fun sharedMember()
+  }
+  fun ownMember()
+}
+//
+external fun myFunWithOptionalArgs(
+  x: Int,
+  y: String = definedExternally,
+  z: String = definedExternally
+)
+//
+open external class Foo{
+  open fun run()
+  fun stop()
+}
+
+class Bar: Foo(){
+  override fun run(){
+    window.alert("Running!")
+  }
+  fun restart(){
+    window.alert("Restarting")
+  }
+}
+//
+external interface HasFooAndBar{
+  fun foo()
+
+  fun bar()
+}
+//
+external fun myFunction(p: HasFooAndbar)
+
+//
+external interface JQueryAjaxSettings{
+  var async: Boolean
+
+  var cache: Boolean
+
+  var complete: (JQueryXHR, String) -> Unit
+  
+}
+
+fun JQueryAjaxSettings(): JQueryAjaxSettings = js("{}")
+
+external class JQuery{
+  companion object{
+    fun get(settings: JQueryAjaxSetting): JQueryXHR
+  }
+}
+
+fun sendQuery(){
+  JQuery.get(JQueryAjaxSettings().apply){
+    complete = {(xhr, data) ->
+    window.alert("Request complete")
+    }
+  })
+}
+//
+fun usingUnsafeCast(s: Any) = s.unsafeCast<String>()
+fun usingAsOperator(s: Any) = s as String
+//
+function usingUnsafeCast(s){
+  return s;
+  
+}
+
+function usingAsOperator(s){
+  var tmp$;
+  return typeof(tmp$ = s) === 'string'?tmp$ : throwCCE();
+  
+}
+//
+dyn.whatever(1, " foo", dyn)
+dyn.whatever(*arrayOf(1,2,3))
+//
+dyn.foo().bar.baz()
+
+//
+dyn.foo{
+  X -> x.bar()
+
+}
+//
+dependencies{
+  implementation(npm("is-sorted", "1.0.5"))
+}
+//
+@JsModule("is-sorted")
+@JsNonModule
+external fun <T sorted(a: Array<T>): Boolean
+
+console.log("hello, kotlin/js!")
+console.log(sorted(arrayOf(1,2,3))
+           )
+
+console.log(sorted(arrayOf(3,2,1)))
+//
+fun foo() ="Hello"
+
+alert(myModule.foo());
+
+alert(require('myModule').foo())
+//
+fun foo() = "hello"
+
+//
+class Person(val name: String)
+{
+  fun hello(){
+    println("hello $name")
+  }
+  @jsName("hellowWithGreeting")
+fun hello(greeting: String){
+  println("$greeting $name")
+}
+}
+//
+var person = new kjs.Person("Dmitry");
+person.hello();
+person.helloWithGreeting("Servus");
+//
+@JsName("new C()")
+external fun newC()
+//
+fun f(){
+  val x:Int= 23
+  val y: Any = x
+  println(y as Float)
+}
+787P
